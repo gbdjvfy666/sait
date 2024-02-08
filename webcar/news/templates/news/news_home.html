@@ -1,0 +1,19 @@
+{% extends 'main/layout.html' %}
+{% block title %} Здарова бандиты{% endblock %}
+
+{% block content %}
+    <div class='features' xmlns="http://www.w3.org/1999/html">
+        <h1>Здарова бандиты</h1>
+        {% if news %}
+            {% for el in news %}
+                <div class="alert alert-warning">
+                    <h3>{{ el.title }}</h3>
+                    <p>{{ el.anons }}</p>
+                    <a href="{% url 'news-detail' el.id %}" class="btn btn-warning">Читать полностью</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>У вас нет записей</p>
+        {% endif %}
+    </div>
+{% endblock %}
