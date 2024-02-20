@@ -9,7 +9,7 @@ CURRENCIES_SYMBOLS = {
     'usd': '$',
 }
 @register.filter()
-def currency(value):
+def currency(value, code='rub'):
     """"
     value: значение, к которому нужно применить фильтр
     """
