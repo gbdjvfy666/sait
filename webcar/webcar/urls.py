@@ -6,5 +6,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
-    path('news/', include('news.urls'))
+    path('news/', include('news.urls')),
+    path('pages/', include('django.contrib.flatpages.urls')),
+    path('products/', include('simpleapp.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
