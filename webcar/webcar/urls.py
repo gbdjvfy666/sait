@@ -11,4 +11,5 @@ urlpatterns = [
                   path('products/', include('simpleapp.urls')),
                   path('accounts/', include('django.contrib.auth.urls')),
                   path('accounts/', include("accounts.urls")),
+                  path("accounts/", include("allauth.urls")),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
