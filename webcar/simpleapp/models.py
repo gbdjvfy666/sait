@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 
 class Product(models.Model):
     name = models.CharField(
@@ -26,6 +28,7 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail', args=[str(self.id)])
+
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
@@ -41,3 +44,16 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscriptions'
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriptions'
+    )

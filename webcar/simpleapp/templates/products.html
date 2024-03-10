@@ -13,6 +13,9 @@ Products
     {{ filterset.form.as_p }}
     <input type="submit" value="Найти">
 </form>
+<hr>
+{% if perms.simpleapp.add._product %}
+<a href="{% url 'product_create' %}">Добавить товар</a>
 <h3>{{ current_time|date:'D d M Y' }}</h3>
 <h3> {{ next_sale|default_if_none:"Чуть позже сообщим о распродаже!" }} </h3>
 <hr>
@@ -24,6 +27,7 @@ Products
         <td>Категория</td>
         <td>Цена</td>
         <td>Количество</td>
+        {% if perms.simpleapp.change_product or perms.simpleapp.delete_product %}
     </tr>
     {% for product in product %}
     <tr>
@@ -33,6 +37,14 @@ Products
         <td>{{ product.price }}</td>
         <td>{{ product.price|currency:"rub" }}</td>
         <td>{{ product.quantity }}</td>
+        <td>
+            {% if perms.simpleapp.change_product %}
+            <a href="{% url 'product_update' pk=product.id %}">Изменить</a>
+            {% endif %}
+            {% if perms.simpleapp.delete_product %}
+            <a href="{% url 'product_delete' product.id %}">Удалить</a>
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 
