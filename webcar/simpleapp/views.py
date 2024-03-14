@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from datetime import datetime
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -7,6 +7,41 @@ from .models import Product
 from .filters.filters import ProductFilter
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.db.models import Exists, OuterRef
+from django.views.decorators.csrf import csrf_protect
+from .models import Subscription, Category
+
+
+@login_required
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscription.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscription.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscription.objects.filter(
+                user=request.user,
+                category=OuterRef('pk'),
+            )
+        )
+    ).order_by('name')
+    return render(
+        request,
+        'subscriptions.html',
+        {'categories': categories_with_subscriptions},
+    )
 
 
 class ProductCreate(LoginRequiredMixin, CreateView):
@@ -66,3 +101,13 @@ class ProductUpdate(PermissionRequiredMixin, UpdateView):
 
 def index(request):
     return render(request, 'index.html')
+
+
+class CategotyListView(ListView):
+    model = Product
+    template_name = 'simpleapp/category_list.html'
+    context_object_name = 'category_news_list'
+
+    def get_queryset(self):
+        self.category = get_object_or_404()
+

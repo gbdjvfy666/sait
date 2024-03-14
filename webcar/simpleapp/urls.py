@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    ProductsList, ProductDetails, ProductCreate, ProductUpdate, ProductDelete
+    ProductsList, ProductDetails, ProductCreate, ProductUpdate, ProductDelete,subscriptions
 )
 from .views import index
 
@@ -14,4 +14,6 @@ urlpatterns = [
     path('<int:pk>/update/', ProductUpdate.as_view(), name='product_update'),
     path('<int:pk>/delete/', ProductDelete.as_view(), name='product_delete'),
     path('<int:pk>/create/', ProductCreate.as_view(), name='product_create'),
+    path('subscriptions/', subscriptions,name='subscriptions'),
+    path('categories/<int:pk>')
 ]
