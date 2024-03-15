@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    ProductsList, ProductDetails, ProductCreate, ProductUpdate, ProductDelete,subscriptions
+    ProductsList, ProductDetails, ProductCreate, ProductUpdate, ProductDelete, subscriptions, CategoryListView
 )
 from .views import index
 
@@ -15,5 +15,4 @@ urlpatterns = [
     path('<int:pk>/delete/', ProductDelete.as_view(), name='product_delete'),
     path('<int:pk>/create/', ProductCreate.as_view(), name='product_create'),
     path('subscriptions/', subscriptions,name='subscriptions'),
-    path('categories/<int:pk>')
 ]

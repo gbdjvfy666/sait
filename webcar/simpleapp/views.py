@@ -103,11 +103,12 @@ def index(request):
     return render(request, 'index.html')
 
 
-class CategotyListView(ListView):
+class CategoryListView(Product):
     model = Product
     template_name = 'simpleapp/category_list.html'
     context_object_name = 'category_news_list'
 
     def get_queryset(self):
-        self.category = get_object_or_404()
-
+        self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Product.objects.filter(category=self.category).order_by('-created_at')
+        return queryset

@@ -2,7 +2,9 @@ from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import send_mail
 from .models import Product
 
 
@@ -32,3 +34,17 @@ def product_created(instance, created, **kwargs):
         msg = EmailMultiAlternatives(subject, text_content, None, [email])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
+
+@receiver(post_save, sender=Product)
+def notify_subscribers(sender, instance, created, **kwargs):
+    if created:
+        subscribers = instance.category.subscribers.all()
+        news_link = f"https://yourdomain.com/news/{instance.id}"
+        for subscriber in subscribers:
+            send_mail(
+                'New News Notification',
+                f'Hello {subscriber.user.username}',
+                'nostresko@gmail.com',
+                [subscriber.user.email],
+                fail_silently=False,
+            )
